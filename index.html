@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- header / greeting section -->
+    <div class="header">
+        <h1>Welcome to User Management Dashboard 👋</h1>
+        <p>Click the button below to load users from the server</p>
+        <button id="showUsersBtn">Show Users</button>
+        <button id="addUserBtn">+ Add User</button>
+    </div>
+
+    <!-- loading / error message will show here -->
+    <div id="statusMsg"></div>
+
+    <!-- users will be added here dynamically using JS -->
+    <div id="userContainer" class="user-container"></div>
+
+    <!-- add/edit user form - hidden by default, shown using JS -->
+    <div id="formOverlay" class="form-overlay hidden">
+        <div class="form-box">
+            <h2 id="formTitle">Add New User</h2>
+
+            <form id="userForm">
+                <!-- this hidden input will hold user id when editing, empty when adding -->
+                <input type="hidden" id="userId">
+
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" placeholder="Enter first name">
+                <span class="error-text" id="firstNameError"></span>
+
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" placeholder="Enter last name">
+                <span class="error-text" id="lastNameError"></span>
+
+                <label for="email">Email</label>
+                <input type="text" id="email" placeholder="Enter email">
+                <span class="error-text" id="emailError"></span>
+
+                <label for="department">Department</label>
+                <input type="text" id="department" placeholder="Enter department">
+                <span class="error-text" id="departmentError"></span>
+
+                <div class="form-buttons">
+                    <button type="submit" id="saveBtn">Save</button>
+                    <button type="button" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="render.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
