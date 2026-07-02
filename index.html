@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- header / greeting section -->
@@ -14,6 +16,24 @@
         <p>Click the button below to load users from the server</p>
         <button id="showUsersBtn">Show Users</button>
         <button id="addUserBtn">+ Add User</button>
+    </div>
+
+    <!-- search, sort, filter controls -->
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search users...">
+
+        <select id="sortSelect">
+            <option value="">Sort By</option>
+            <option value="firstName-asc">First Name (A-Z)</option>
+            <option value="firstName-desc">First Name (Z-A)</option>
+            <option value="lastName-asc">Last Name (A-Z)</option>
+            <option value="lastName-desc">Last Name (Z-A)</option>
+            <option value="email-asc">Email (A-Z)</option>
+            <option value="email-desc">Email (Z-A)</option>
+        </select>
+
+        <button id="filterBtn">Filter</button>
+        <button id="clearFilterBtn">Clear Filters</button>
     </div>
 
     <!-- loading / error message will show here -->
@@ -55,8 +75,33 @@
         </div>
     </div>
 
+    <!-- filter popup -->
+    <div id="filterOverlay" class="form-overlay hidden">
+        <div class="form-box">
+            <h2>Filter Users</h2>
+
+            <label for="filterFirstName">First Name</label>
+            <input type="text" id="filterFirstName" placeholder="e.g. Leanne">
+
+            <label for="filterLastName">Last Name</label>
+            <input type="text" id="filterLastName" placeholder="e.g. Graham">
+
+            <label for="filterEmail">Email</label>
+            <input type="text" id="filterEmail" placeholder="e.g. gmail.com">
+
+            <label for="filterDepartment">Department</label>
+            <input type="text" id="filterDepartment" placeholder="e.g. Deckow-Crist">
+
+            <div class="form-buttons">
+                <button type="button" id="applyFilterBtn">Apply</button>
+                <button type="button" id="closeFilterBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script src="api.js"></script>
     <script src="render.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

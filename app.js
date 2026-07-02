@@ -16,11 +16,34 @@ const lastNameInput = document.getElementById("lastName");
 const emailInput = document.getElementById("email");
 const departmentInput = document.getElementById("department");
 
+// search, sort, filter elements
+const searchInput = document.getElementById("searchInput");
+const sortSelect = document.getElementById("sortSelect");
+const filterBtn = document.getElementById("filterBtn");
+const clearFilterBtn = document.getElementById("clearFilterBtn");
+
+const filterOverlay = document.getElementById("filterOverlay");
+const applyFilterBtn = document.getElementById("applyFilterBtn");
+const closeFilterBtn = document.getElementById("closeFilterBtn");
+
+const filterFirstName = document.getElementById("filterFirstName");
+const filterLastName = document.getElementById("filterLastName");
+const filterEmail = document.getElementById("filterEmail");
+const filterDepartment = document.getElementById("filterDepartment");
+
 // storing users locally so we don't have to call API again and again for delete/edit
 let allUsers = [];
 
 // keeping a counter for new users we add locally (since JSONPlaceholder always returns id: 11)
 let nextLocalId = 100;
+
+// keeping track of current filter values so search/sort don't reset them
+let currentFilters = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    department: ""
+};
 
 // when Show Users button is clicked
 showUsersBtn.addEventListener("click", () => {
@@ -41,6 +64,50 @@ cancelBtn.addEventListener("click", () => {
 userForm.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page from reloading
     handleFormSubmit();
+});
+
+// search box - runs every time user types
+searchInput.addEventListener("input", () => {
+    applyChanges();
+});
+
+// sort dropdown - runs every time user changes sort option
+sortSelect.addEventListener("change", () => {
+    applyChanges();
+});
+
+// open filter popup
+filterBtn.addEventListener("click", () => {
+    filterOverlay.classList.remove("hidden");
+});
+
+// close filter popup without applying
+closeFilterBtn.addEventListener("click", () => {
+    filterOverlay.classList.add("hidden");
+});
+
+// apply filter values and close popup
+applyFilterBtn.addEventListener("click", () => {
+    currentFilters.firstName = filterFirstName.value.trim().toLowerCase();
+    currentFilters.lastName = filterLastName.value.trim().toLowerCase();
+    currentFilters.email = filterEmail.value.trim().toLowerCase();
+    currentFilters.department = filterDepartment.value.trim().toLowerCase();
+
+    filterOverlay.classList.add("hidden");
+    applyChanges();
+});
+
+// clear all filters, search and sort
+clearFilterBtn.addEventListener("click", () => {
+    currentFilters = { firstName: "", lastName: "", email: "", department: "" };
+    filterFirstName.value = "";
+    filterLastName.value = "";
+    filterEmail.value = "";
+    filterDepartment.value = "";
+    searchInput.value = "";
+    sortSelect.value = "";
+
+    renderUsers(allUsers);
 });
 
 
@@ -71,6 +138,49 @@ async function loadUsers() {
         console.log(err);
         showError("Failed to load users. Please try again.");
     }
+}
+
+// runs search, filter and sort together on allUsers, then re-renders
+function applyChanges() {
+    let result = [...allUsers];
+
+    // filter first
+    result = result.filter(user => {
+        return (
+            user.firstName.toLowerCase().includes(currentFilters.firstName) &&
+            user.lastName.toLowerCase().includes(currentFilters.lastName) &&
+            user.email.toLowerCase().includes(currentFilters.email) &&
+            user.department.toLowerCase().includes(currentFilters.department)
+        );
+    });
+
+    // then search (checks all fields together)
+    const searchValue = searchInput.value.trim().toLowerCase();
+    if (searchValue !== "") {
+        result = result.filter(user => {
+            const combined = `${user.firstName} ${user.lastName} ${user.email} ${user.department}`.toLowerCase();
+            return combined.includes(searchValue);
+        });
+    }
+
+    // then sort
+    const sortValue = sortSelect.value;
+    if (sortValue !== "") {
+        const [field, order] = sortValue.split("-");
+
+        result.sort((a, b) => {
+            const valA = a[field].toLowerCase();
+            const valB = b[field].toLowerCase();
+
+            if (order === "asc") {
+                return valA.localeCompare(valB);
+            } else {
+                return valB.localeCompare(valA);
+            }
+        });
+    }
+
+    renderUsers(result);
 }
 
 // opens the form - if user object is passed, its Edit mode. otherwise Add mode
